@@ -20,7 +20,7 @@ import (
 type AddBallotRequest struct {
 	PrivateKey string   `json:"private_key" binding:"required"`
 	VoteID     string   `json:"vote_id" binding:"required"`
-	Quantity   int      `json:"quantity" binding:"required"`
+	Quantity   int      `json:"quantity" binding:"-"`
 	Codes      []string `json:"codes" binding:"-"`
 }
 
