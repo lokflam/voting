@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package voting;
+
+// Vote represents the settings of a vote
+message Vote {
+    string id = 1;  // ID of the vote, should be a UUID to prevent collision of key
+    string name = 2;  // name of the vote
+    string description = 3;  // description of the vote
+    repeated Candidate candidates = 4;  // all candidates participating in the vote
+    int64 start_at = 5;  // start time
+    int64 end_at = 6;  // end time
+    int64 updated_at = 14; // updated time
+    int64 created_at = 15; // created time
+}
+
+// Candidate represents a candidate participated in a vote
+message Candidate {
+    string code = 1;  // identifier of the candidate, should be unique for all candidates in a vote
+    string name = 2;  // name of the candidate
+    string description = 3;  // description of the candidate
+    CandidateStatus status = 4;  // candidate status, disqualified candidate should not be allowed to be voted
+}
+
+// Candidate Status represents status of a candidate
+enum CandidateStatus {
+    QUALIFIED = 0;
+    DISQUALIFIED = 1;
+}

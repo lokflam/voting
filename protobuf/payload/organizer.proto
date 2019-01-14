@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package payload;
+
+// generate from "../voting/protobuf"
+import "voting/protobuf/voting/vote.proto";
+
+// OrganizerPayload represents the format of a payload for organizer
+message OrganizerPayload {
+    enum Action {
+        CREATE_VOTE = 0;
+        UPDATE_VOTE = 1;
+        DELETE_VOTE = 2;
+        ADD_BALLOT = 3;
+        COUNT_BALLOT = 4;
+    }
+
+    message CreateVoteData {
+        voting.Vote vote = 1;
+    }
+
+    message UpdateVoteData {
+        voting.Vote vote = 1;
+    }
+
+    message DeleteVoteData {
+        string vote_id = 1;
+    }
+
+    message AddBallotData {
+        string vote_id = 1;
+        string hashed_code = 2;
+    }
+
+    message CountBallotData {
+        string vote_id = 1;
+    }
+
+    Action action = 1;
+    int64 submitted_at = 2;
+    CreateVoteData create_vote = 3;
+    UpdateVoteData update_vote = 4;
+    DeleteVoteData delete_vote = 5;
+    AddBallotData add_ballot = 6;
+    CountBallotData count_ballot = 7;
+}

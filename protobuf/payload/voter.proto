@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package payload;
+
+// VoterPayload represents the format of a payload for voter
+message VoterPayload {
+    enum Action {
+        CAST_BALLOT = 0;
+    }
+
+    message CastBallotData {
+        string vote_id = 1;
+        string choice = 2;
+        string code = 3;
+    }
+
+    Action action = 1;
+    int64 submitted_at = 2;
+    CastBallotData cast_ballot = 3;
+}

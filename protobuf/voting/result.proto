@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package voting;
+
+// Result represents a voting result
+message Result {
+    string vote_id = 1;  // ID of a vote
+    uint32 total = 2;  // number of total ballots
+    uint32 casted = 3;  // number of casted ballots
+    map<string,uint32> counts = 4;  // number of ballots for each candidate
+    int64 created_at = 15; // created time
+}
