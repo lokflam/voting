@@ -41,6 +41,8 @@ RUN echo "deb [arch=amd64] http://repo.sawtooth.me/ubuntu/ci bionic universe" >>
 
 ENV GOPATH=/go
 
+ENV PATH=$PATH:/go/bin:/usr/lib/go-1.10/bin
+
 RUN mkdir /go && \
     go get -u \
     github.com/golang/protobuf/proto \
