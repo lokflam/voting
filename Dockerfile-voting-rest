@@ -41,11 +41,30 @@ RUN echo "deb [arch=amd64] http://repo.sawtooth.me/ubuntu/ci bionic universe" >>
 
 ENV GOPATH=/go
 
+RUN mkdir /go \
+    go get -u \
+    github.com/golang/protobuf/proto \
+    github.com/golang/protobuf/protoc-gen-go \
+    github.com/pebbe/zmq4 \
+    github.com/brianolson/cbor_go \
+    github.com/satori/go.uuid \
+    github.com/btcsuite/btcd/btcec \
+    github.com/jessevdk/go-flags \
+    github.com/pelletier/go-toml \
+    github.com/golang/mock/gomock \
+    github.com/golang/mock/mockgen \
+    golang.org/x/crypto/ripemd160 \
+    golang.org/x/crypto/ssh \
+    github.com/hyperledger/sawtooth-sdk-go \
+    github.com/gin-gonic/gin
+
 ENV PATH=$PATH:/go/bin:/usr/lib/go-1.10/bin
 
 COPY . /go/src/voting
 
-RUN cd /go/src/voting/rest \
+RUN cd /go/src/github.com/hyperledger/sawtooth-sdk-go \
+ && go generate \
+ && cd /go/src/voting/rest \
  && go build -o /go/bin/voting-rest
 
 # -------------=== sawtooth-voting-rest build ===-------------
