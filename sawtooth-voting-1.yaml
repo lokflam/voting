@@ -60,7 +60,7 @@ services:
           --peers ${PEERS} \
           --scheduler parallel \
           --network-auth challenge \
-          --opentsdb-url http://influxdb:8086 \
+          --opentsdb-url http://${HOST}:8086 \
           --opentsdb-db metrics
     \""
     environment:
@@ -104,7 +104,7 @@ services:
         -vvv \
         -C tcp://validator:4004 \
         --bind rest-api:8008 \
-        --opentsdb-url http://influxdb:8086 \
+        --opentsdb-url http://${HOST}:8086 \
         --opentsdb-db metrics
     \""
     stop_signal: SIGKILL
