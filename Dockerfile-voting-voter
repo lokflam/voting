@@ -68,12 +68,4 @@ RUN cd /go/src/github.com/hyperledger/sawtooth-sdk-go \
 
 # -------------=== sawtooth-voting-voter build ===-------------
 
-FROM ubuntu:bionic
-
-RUN apt-get update
-
-ENV PATH=$PATH:/project/bin
-
-COPY --from=builder /go/bin/voting-voter /project/bin/voting-voter
-
 CMD ["voting-voter", "-vvv"]

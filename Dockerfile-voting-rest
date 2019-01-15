@@ -71,12 +71,4 @@ RUN cd /go/src/github.com/hyperledger/sawtooth-sdk-go \
 
 # -------------=== sawtooth-voting-rest build ===-------------
 
-FROM ubuntu:bionic
-
-RUN apt-get update
-
-ENV PATH=$PATH:/project/bin
-
-COPY --from=builder /go/bin/voting-rest /project/bin/voting-rest
-
 CMD ["voting-rest"]
