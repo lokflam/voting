@@ -54,7 +54,6 @@ func (t *Handler) ListVote(context *gin.Context) {
 	// success
 	context.JSON(http.StatusOK, gin.H{
 		"data":          votes,
-		"head":          stateResponse.Head,
 		"start":         stateResponse.Start,
 		"next_position": stateResponse.NextPosition,
 	})

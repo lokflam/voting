@@ -56,7 +56,6 @@ func (t *Handler) GetResult(context *gin.Context) {
 	// success
 	context.JSON(http.StatusOK, gin.H{
 		"data":          results,
-		"head":          stateResponse.Head,
 		"start":         stateResponse.Start,
 		"next_position": stateResponse.NextPosition,
 	})
