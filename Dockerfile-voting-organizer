@@ -43,7 +43,7 @@ ENV GOPATH=/go
 
 ENV PATH=$PATH:/go/bin:/usr/lib/go-1.10/bin
 
-RUN mkdir /go \
+RUN mkdir /go && \
     go get -u \
     github.com/golang/protobuf/proto \
     github.com/golang/protobuf/protoc-gen-go \
