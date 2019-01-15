@@ -16,7 +16,7 @@
 
 # -------------=== sawtooth-voting-organizer build ===-------------
 
-FROM ubuntu:bionic
+FROM ubuntu:bionic as builder
 
 ENV VERSION=AUTO_STRICT
 
@@ -49,5 +49,13 @@ RUN cd /go/src/voting/processor/organizer \
  && go build -o /go/bin/voting-organizer
 
 # -------------=== sawtooth-voting-organizer build ===-------------
+
+FROM ubuntu:bionic
+
+RUN apt-get update
+
+ENV PATH=$PATH:/project/bin
+
+COPY --from=builder /go/bin/voting-organizer /project/bin/voting-organizer
 
 CMD ["voting-organizer", "-vvv"]

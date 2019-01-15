@@ -16,7 +16,7 @@
 
 # -------------=== sawtooth-voting-rest build ===-------------
 
-FROM ubuntu:bionic
+FROM ubuntu:bionic as builder
 
 ENV VERSION=AUTO_STRICT
 
@@ -49,5 +49,13 @@ RUN cd /go/src/voting/rest \
  && go build -o /go/bin/voting-rest
 
 # -------------=== sawtooth-voting-rest build ===-------------
+
+FROM ubuntu:bionic
+
+RUN apt-get update
+
+ENV PATH=$PATH:/project/bin
+
+COPY --from=builder /go/bin/voting-rest /project/bin/voting-rest
 
 CMD ["voting-rest"]
