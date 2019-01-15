@@ -35,6 +35,10 @@ func (t *Handler) AddBallot(context *gin.Context) {
 
 	var codes []string // storing generated codes
 	if len(request.Codes) > 0 {
+		if len(request.Codes) > 1000 {
+			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid content: 'codes' length must be smaller than 1000"})
+			return
+		}
 		codes = request.Codes
 	} else {
 		if request.Quantity < 1 || request.Quantity > 1000 {
