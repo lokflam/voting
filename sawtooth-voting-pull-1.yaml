@@ -51,37 +51,13 @@ services:
         sawadm keygen --force && \
         mkdir -p /poet-shared/validator || true && \
         cp -a /etc/sawtooth/keys /poet-shared/validator/ && \
-        while [ ! -f /poet-shared/poet-enclave-measurement ]; do sleep 1; done && \
-        while [ ! -f /poet-shared/poet-enclave-basename ]; do sleep 1; done && \
-        while [ ! -f /poet-shared/poet.batch ]; do sleep 1; done && \
-        cp /poet-shared/poet.batch / && \
-        sawset genesis \
-          -k /etc/sawtooth/keys/validator.priv \
-          -o config-genesis.batch && \
-        sawset proposal create \
-          -k /etc/sawtooth/keys/validator.priv \
-          sawtooth.consensus.algorithm.name=PoET \
-          sawtooth.consensus.algorithm.version=0.1 \
-          sawtooth.poet.report_public_key_pem=\
-          \\\"$$(cat /poet-shared/simulator_rk_pub.pem)\\\" \
-          sawtooth.poet.valid_enclave_measurements=$$(cat /poet-shared/poet-enclave-measurement) \
-          sawtooth.poet.valid_enclave_basenames=$$(cat /poet-shared/poet-enclave-basename) \
-          -o config.batch && \
-        sawset proposal create \
-          -k /etc/sawtooth/keys/validator.priv \
-             sawtooth.poet.target_wait_time=5 \
-             sawtooth.poet.initial_wait_time=25 \
-             sawtooth.publisher.max_batches_per_block=100 \
-          -o poet-settings.batch && \
-        sawadm genesis \
-          config-genesis.batch config.batch poet.batch poet-settings.batch && \
         sawtooth-validator -vvv \
           --bind network:tcp://eth0:8800 \
           --bind component:tcp://eth0:4004 \
           --bind consensus:tcp://eth0:5050 \
           --peering static \
-          --peers ${PEERS} \
           --endpoint tcp://${HOST}:8800 \
+          --peers ${PEERS} \
           --scheduler parallel \
           --network-auth challenge \
           --opentsdb-url http://${HOST}:8086 \
@@ -99,18 +75,8 @@ services:
     volumes:
       - poet-shared:/poet-shared
     command: "bash -c \"\
-        if [ ! -f /poet-shared/poet-enclave-measurement ]; then \
-            poet enclave measurement >> /poet-shared/poet-enclave-measurement; \
-        fi && \
-        if [ ! -f /poet-shared/poet-enclave-basename ]; then \
-            poet enclave basename >> /poet-shared/poet-enclave-basename; \
-        fi && \
-        if [ ! -f /poet-shared/simulator_rk_pub.pem ]; then \
-            cp /etc/sawtooth/simulator_rk_pub.pem /poet-shared; \
-        fi && \
         while [ ! -f /poet-shared/validator/keys/validator.priv ]; do sleep 1; done && \
         cp -a /poet-shared/validator/keys /etc/sawtooth && \
-        poet registration create -k /etc/sawtooth/keys/validator.priv -o /poet-shared/poet.batch && \
         poet-engine -C tcp://validator:5050 --component tcp://validator:4004 \
     \""
 
@@ -154,9 +120,6 @@ services:
         \""
 
   voting-organizer:
-    build:
-      context: .
-      dockerfile: Dockerfile-voting-organizer
     image: sawtooth-voting-organizer:latest
     container_name: sawtooth-voting-organizer-default
     depends_on:
@@ -165,9 +128,6 @@ services:
     stop_signal: SIGKILL
 
   voting-voter:
-    build:
-      context: .
-      dockerfile: Dockerfile-voting-voter
     image: sawtooth-voting-voter:latest
     container_name: sawtooth-voting-voter-default
     depends_on:
@@ -176,9 +136,6 @@ services:
     stop_signal: SIGKILL
 
   voting-rest:
-    build:
-      context: .
-      dockerfile: Dockerfile-voting-rest
     image: sawtooth-voting-rest:latest
     container_name: sawtooth-voting-rest-default
     ports:

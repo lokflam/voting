@@ -46,7 +46,7 @@ func main() {
 	}
 	logger.SetLevel(loggingLevel)
 
-	handler := &handler.AdminHandler{}
+	handler := &handler.Handler{}
 	processor := processor.NewTransactionProcessor(opts.Connect)
 	processor.SetMaxQueueSize(opts.Queue)
 	if opts.Threads > 0 {

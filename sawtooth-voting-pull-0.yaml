@@ -154,9 +154,6 @@ services:
         \""
 
   voting-organizer:
-    build:
-      context: .
-      dockerfile: Dockerfile-voting-organizer
     image: sawtooth-voting-organizer:latest
     container_name: sawtooth-voting-organizer-default
     depends_on:
@@ -165,9 +162,6 @@ services:
     stop_signal: SIGKILL
 
   voting-voter:
-    build:
-      context: .
-      dockerfile: Dockerfile-voting-voter
     image: sawtooth-voting-voter:latest
     container_name: sawtooth-voting-voter-default
     depends_on:
@@ -176,9 +170,6 @@ services:
     stop_signal: SIGKILL
 
   voting-rest:
-    build:
-      context: .
-      dockerfile: Dockerfile-voting-rest
     image: sawtooth-voting-rest:latest
     container_name: sawtooth-voting-rest-default
     ports:

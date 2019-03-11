@@ -19,28 +19,28 @@ var logger = logging.Get()
 var namespace = lib.Hexdigest512("voting")[:6]
 var acceptedDelay int64 = 60 * 5 // 5 mins
 
-// AdminHandler represents handler for admin
-type AdminHandler struct {
+// Handler represents handler for application
+type Handler struct {
 	Rest string
 }
 
 // FamilyName returns name
-func (t *AdminHandler) FamilyName() string {
+func (t *Handler) FamilyName() string {
 	return "voting-organizer"
 }
 
 // FamilyVersions returns version
-func (t *AdminHandler) FamilyVersions() []string {
+func (t *Handler) FamilyVersions() []string {
 	return []string{"1.0"}
 }
 
 // Namespaces returns namespace
-func (t *AdminHandler) Namespaces() []string {
+func (t *Handler) Namespaces() []string {
 	return []string{namespace}
 }
 
 // Apply handles request
-func (t *AdminHandler) Apply(request *processor_pb2.TpProcessRequest, context *processor.Context) error {
+func (t *Handler) Apply(request *processor_pb2.TpProcessRequest, context *processor.Context) error {
 	// decode payload
 	payload := &pl.OrganizerPayload{}
 	err := proto.Unmarshal(request.GetPayload(), payload)
