@@ -1,0 +1,30 @@
+version: "3"
+
+volumes:
+  influx-data:
+
+services:
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    expose:
+      - 8086
+    ports:
+      - "8086:8086"
+    volumes:
+      - influx-data:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DB=metrics
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=adminpw
+      - INFLUXDB_USER=lrdata
+      - INFLUXDB_USER_PASSWORD=lrdatapw
+
+  grafana:
+    image: lokllf/sawtooth-stats-grafana:latest
+    container_name: grafana
+    expose:
+      - 3000
+    ports:
+      - "3000:3000"

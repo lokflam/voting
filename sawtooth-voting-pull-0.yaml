@@ -154,7 +154,7 @@ services:
         \""
 
   voting-organizer:
-    image: sawtooth-voting-organizer:latest
+    image: lokllf/sawtooth-voting-organizer:latest
     container_name: sawtooth-voting-organizer-default
     depends_on:
       - validator
@@ -162,7 +162,7 @@ services:
     stop_signal: SIGKILL
 
   voting-voter:
-    image: sawtooth-voting-voter:latest
+    image: lokllf/sawtooth-voting-voter:latest
     container_name: sawtooth-voting-voter-default
     depends_on:
       - validator
@@ -170,7 +170,7 @@ services:
     stop_signal: SIGKILL
 
   voting-rest:
-    image: sawtooth-voting-rest:latest
+    image: lokllf/sawtooth-voting-rest:latest
     container_name: sawtooth-voting-rest-default
     ports:
       - "9009:9009"
