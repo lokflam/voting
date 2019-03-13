@@ -20,21 +20,21 @@ volumes:
 
 services:
   settings-tp:
-    image: hyperledger/sawtooth-settings-tp:1.1.4
+    image: hyperledger/sawtooth-settings-tp:1.1
     container_name: sawtooth-settings-tp-default
     depends_on:
       - validator
     entrypoint: settings-tp -vv -C tcp://validator:4004
 
   identity-tp:
-    image: hyperledger/sawtooth-identity-tp:1.1.4
+    image: hyperledger/sawtooth-identity-tp:1.1
     container_name: sawtooth-identity-tp-default
     depends_on:
       - validator
     entrypoint: identity-tp -vv -C tcp://validator:4004
 
   validator:
-    image: hyperledger/sawtooth-validator:1.1.4
+    image: hyperledger/sawtooth-validator:1.1
     container_name: sawtooth-validator-default
     expose:
       - 4004
@@ -70,7 +70,7 @@ services:
     stop_signal: SIGKILL
 
   poet-engine:
-    image: hyperledger/sawtooth-poet-engine:1.1.4
+    image: hyperledger/sawtooth-poet-engine:1.1
     container_name: sawtooth-poet-engine
     volumes:
       - poet-shared:/poet-shared
@@ -81,7 +81,7 @@ services:
     \""
 
   poet-validator-registry-tp:
-    image: hyperledger/sawtooth-poet-validator-registry-tp:1.1.4
+    image: hyperledger/sawtooth-poet-validator-registry-tp:1.1
     container_name: sawtooth-poet-validator-registry-tp
     expose:
       - 4004
@@ -91,7 +91,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api:
-    image: hyperledger/sawtooth-rest-api:1.1.4
+    image: hyperledger/sawtooth-rest-api:1.1
     container_name: sawtooth-rest-api-default
     ports:
       - "8008:8008"
@@ -110,7 +110,7 @@ services:
     stop_signal: SIGKILL
 
   shell:
-    image: hyperledger/sawtooth-all:1.1.4
+    image: hyperledger/sawtooth-all:1.1
     container_name: sawtooth-shell-default
     depends_on:
       - rest-api
