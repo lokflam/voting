@@ -34,7 +34,7 @@ services:
     entrypoint: identity-tp -vv -C tcp://validator:4004
 
   validator:
-    image: hyperledger/sawtooth-validator:1.1.3
+    image: hyperledger/sawtooth-validator:1.1
     container_name: sawtooth-validator-default
     expose:
       - 4004
