@@ -41,8 +41,8 @@ func (t *Handler) AddBallot(context *gin.Context) {
 		}
 		codes = request.Codes
 	} else {
-		if request.Quantity < 1 || request.Quantity > 1000 {
-			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid content: 'quantity' must be 2 to 1000"})
+		if request.Quantity < 0 || request.Quantity > 1000 {
+			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid content: 'quantity' must be 1 to 1000"})
 			return
 		}
 

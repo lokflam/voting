@@ -11,14 +11,21 @@ import (
 
 // SaveBallot save a Ballot to the blockchain
 func SaveBallot(ballot *voting.Ballot, context *processor.Context, namespace string) error {
-	// generate address
-	address := GetBallotAddress(ballot.GetHashedCode(), ballot.GetVoteId(), (ballot.State == voting.Ballot_IN_RESULT_CASTED), namespace)
-
 	// marshal data
 	data, err := proto.Marshal(ballot)
 	if err != nil {
 		return fmt.Errorf("Failed to serialize: %v", err)
 	}
+
+	// delete repeated ballot
+	address = GetBallotAddress(ballot.GetHashedCode(), ballot.GetVoteId(), !(ballot.State == voting.Ballot_IN_RESULT_CASTED), namespace)
+	_, err = context.DeleteState([]string{address})
+	if err != nil {
+		return fmt.Errorf("Failed to delete state: %v", err)
+	}
+
+	// generate address
+	address := GetBallotAddress(ballot.GetHashedCode(), ballot.GetVoteId(), (ballot.State == voting.Ballot_IN_RESULT_CASTED), namespace)
 
 	// add data to state
 	addresses, err := context.SetState(map[string][]byte{address: data})
@@ -27,13 +34,6 @@ func SaveBallot(ballot *voting.Ballot, context *processor.Context, namespace str
 	}
 	if len(addresses) == 0 {
 		return fmt.Errorf("No addresses in set response")
-	}
-
-	// delete repeated ballot
-	address = GetBallotAddress(ballot.GetHashedCode(), ballot.GetVoteId(), !(ballot.State == voting.Ballot_IN_RESULT_CASTED), namespace)
-	_, err = context.DeleteState([]string{address})
-	if err != nil {
-		return fmt.Errorf("Failed to delete state: %v", err)
 	}
 
 	return nil
