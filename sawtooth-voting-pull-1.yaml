@@ -55,9 +55,9 @@ services:
           --bind network:tcp://eth0:8800 \
           --bind component:tcp://eth0:4004 \
           --bind consensus:tcp://eth0:5050 \
-          --peering static \
+          --peering dynamic \
+          --seeds ${PEERS} \
           --endpoint tcp://${HOST}:8800 \
-          --peers ${PEERS} \
           --scheduler parallel \
           --network-auth challenge
     \""
