@@ -18,14 +18,14 @@ func SaveBallot(ballot *voting.Ballot, context *processor.Context, namespace str
 	}
 
 	// delete repeated ballot
-	address = GetBallotAddress(ballot.GetHashedCode(), ballot.GetVoteId(), !(ballot.State == voting.Ballot_IN_RESULT_CASTED), namespace)
+	address := GetBallotAddress(ballot.GetHashedCode(), ballot.GetVoteId(), !(ballot.State == voting.Ballot_IN_RESULT_CASTED), namespace)
 	_, err = context.DeleteState([]string{address})
 	if err != nil {
 		return fmt.Errorf("Failed to delete state: %v", err)
 	}
 
 	// generate address
-	address := GetBallotAddress(ballot.GetHashedCode(), ballot.GetVoteId(), (ballot.State == voting.Ballot_IN_RESULT_CASTED), namespace)
+	address = GetBallotAddress(ballot.GetHashedCode(), ballot.GetVoteId(), (ballot.State == voting.Ballot_IN_RESULT_CASTED), namespace)
 
 	// add data to state
 	addresses, err := context.SetState(map[string][]byte{address: data})
