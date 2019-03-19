@@ -11,15 +11,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetBallotRequest represents the format of request
+type GetBallotRequest struct {
+	VoteID string `json:"vote_id" binding:"required"`
+	Code   string `json:"codes" binding:"required"`
+}
+
 // GetBallot returns the targeted vote
 func (t *Handler) GetBallot(context *gin.Context) {
-	// parse param
-	voteID := context.Param("voteID")
-	code := context.Param("code")
+	// parse json
+	var request GetBallotRequest
+	if err := context.ShouldBindJSON(&request); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid content: " + err.Error()})
+		return
+	}
 
 	addresses := []string{
-		connector.GetBallotAddress(lib.Hexdigest256(code), voteID, false),
-		connector.GetBallotAddress(lib.Hexdigest256(code), voteID, true),
+		connector.GetBallotAddress(lib.Hexdigest256(request.Code), request.VoteID, false),
+		connector.GetBallotAddress(lib.Hexdigest256(request.Code), request.VoteID, true),
 	}
 
 	for _, address := range addresses {

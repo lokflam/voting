@@ -20,7 +20,7 @@ func Init(h *handler.Handler) *gin.Engine {
 	router.POST("/ballot/add", h.AddBallot)
 	router.POST("/ballot/cast", h.CastBallot)
 	router.POST("/ballot/count", h.CountBallot)
-	router.GET("/ballot/:voteID/:code", h.GetBallot)
+	router.POST("/ballot", h.GetBallot)
 
 	return router
 }
