@@ -14,7 +14,7 @@ import (
 // GetBallotRequest represents the format of request
 type GetBallotRequest struct {
 	VoteID string `json:"vote_id" binding:"required"`
-	Code   string `json:"codes" binding:"required"`
+	Code   string `json:"code" binding:"required"`
 }
 
 // GetBallot returns the targeted vote
