@@ -71,11 +71,15 @@ func (t *CountBallot) Execute() error {
 
 	// init non existing count
 	for _, candidate := range vote.GetCandidates() {
+		exists := false
 		for _, count := range result.GetCounts() {
 			if count.GetCandidate() == candidate.GetCode() {
-				continue
+				exists = true
+				break
 			}
+		}
 
+		if !exists {
 			result.Counts = append(result.Counts, &voting.Result_Count{
 				Candidate: candidate.GetCode(),
 				Count:     0,
