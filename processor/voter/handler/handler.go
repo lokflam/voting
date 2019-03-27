@@ -17,7 +17,7 @@ import (
 
 var logger = logging.Get()
 var namespace = lib.Hexdigest512("voting")[:6]
-var acceptedDelay int64 = 60 * 15 // 15 mins
+var acceptedDelay int64 = 60 * 5 // 5 mins
 
 // Handler represents handler for application
 type Handler struct {

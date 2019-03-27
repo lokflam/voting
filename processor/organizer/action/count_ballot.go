@@ -65,15 +65,21 @@ func (t *CountBallot) Execute() error {
 	} else {
 		result.Total = 0
 		result.Casted = 0
-		result.Counts = make(map[string]uint32)
+		result.Counts = []*voting.Result_Count{}
 	}
 	result.CreatedAt = t.Payload.GetSubmittedAt()
 
 	// init non existing count
 	for _, candidate := range vote.GetCandidates() {
-		if _, ok := result.Counts[candidate.GetCode()]; !ok {
-			result.Counts[candidate.GetCode()] = 0
+		for _, count := range result.GetCounts() {
+			if count.GetCandidate() == candidate.GetCode() {
+				continue
+			}
 		}
+		result.Counts = append(result.Counts, &voting.Result_Count{
+			Candidate: candidate.GetCode(),
+			Count:     0,
+		})
 	}
 
 	// count ballot
@@ -127,8 +133,10 @@ func (t *CountBallot) Execute() error {
 			// increment counts
 			if log.GetChoice() != "" {
 				result.Casted = result.Casted + 1
-				if _, ok := result.Counts[log.GetChoice()]; ok {
-					result.Counts[log.GetChoice()] = result.Counts[log.GetChoice()] + 1
+				for _, count := range result.GetCounts() {
+					if count.GetCandidate() == log.GetChoice() {
+						count.Count = count.GetCount() + 1
+					}
 				}
 			} else {
 				result.Total = result.Total + 1
