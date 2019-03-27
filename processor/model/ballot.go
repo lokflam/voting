@@ -88,12 +88,12 @@ func GetBallotAddress(hashedCode string, voteID string, namespace string) string
 }
 
 // GetBallotLogAddressPrefix returns prefix of ballot log address
-func GetBallotLogAddressPrefix(voteID string, timestamp int64, namespace string) string {
-	return namespace + "11" + lib.Hexdigest256(voteID)[:16] + fmt.Sprintf("%016s", strconv.FormatInt(timestamp, 16))
+func GetBallotLogAddressPrefix(voteID string, namespace string) string {
+	return namespace + "11" + lib.Hexdigest256(voteID)[:16]
 }
 
 // GetBallotLogAddress returns full ballot log address
 func GetBallotLogAddress(hashedCode string, voteID string, timestamp int64, namespace string) string {
 	// format: namespace(6) + ballotLog(2) + voteID(16) + timestamp(16) + hashedCode(30)
-	return GetBallotLogAddressPrefix(voteID, timestamp, namespace) + hashedCode[:30]
+	return GetBallotLogAddressPrefix(voteID, namespace) + fmt.Sprintf("%016s", strconv.FormatInt(timestamp, 16)) + hashedCode[:30]
 }

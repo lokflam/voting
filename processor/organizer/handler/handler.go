@@ -59,7 +59,7 @@ func (t *Handler) Apply(request *processor_pb2.TpProcessRequest, context *proces
 		pl.OrganizerPayload_UPDATE_VOTE:  &act.UpdateVote{Context: context, Namespace: namespace, Payload: payload},
 		pl.OrganizerPayload_DELETE_VOTE:  &act.DeleteVote{Context: context, Namespace: namespace, Payload: payload},
 		pl.OrganizerPayload_ADD_BALLOT:   &act.AddBallot{Context: context, Namespace: namespace, Payload: payload},
-		pl.OrganizerPayload_COUNT_BALLOT: &act.CountBallot{Context: context, Namespace: namespace, Rest: t.Rest, Payload: payload},
+		pl.OrganizerPayload_COUNT_BALLOT: &act.CountBallot{Context: context, Namespace: namespace, Rest: t.Rest, AcceptedDelay: acceptedDelay, Payload: payload},
 	}
 
 	// check action exists

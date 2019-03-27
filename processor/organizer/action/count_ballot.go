@@ -14,10 +14,11 @@ import (
 
 // CountBallot represents the action of counting ballots and generating result
 type CountBallot struct {
-	Context   *processor.Context
-	Namespace string
-	Rest      string
-	Payload   *payload.OrganizerPayload
+	Context       *processor.Context
+	Namespace     string
+	Rest          string
+	AcceptedDelay int64
+	Payload       *payload.OrganizerPayload
 }
 
 // Execute create a new user
@@ -76,12 +77,13 @@ func (t *CountBallot) Execute() error {
 	}
 
 	// count ballot
+	// get recent ballots
 	options := &lib.StateOptions{
-		Address: model.GetBallotLogAddressPrefix(voteID, prevResult.GetCreatedAt(), t.Namespace), // only get ballots that are not counted
+		Address: model.GetBallotLogAddressPrefix(voteID, t.Namespace),
 		Limit:   100,
 		Start:   "",
 		Head:    "",
-		Reverse: false,
+		Reverse: true,
 	}
 	for countedAll := false; !countedAll; {
 		// get ballot log states
@@ -109,8 +111,17 @@ func (t *CountBallot) Execute() error {
 
 			// ignore ballots that are casted after this transaction is submitted
 			if log.GetLoggedAt() > t.Payload.GetSubmittedAt() {
-				countedAll = true
+				continue
+			}
+
+			// only process ballots that are not processed in last count
+			if log.GetLoggedAt() < prevResult.GetCreatedAt()-t.AcceptedDelay {
 				break
+			}
+
+			// skip counted ballot
+			if log.GetProcessedAt() > 0 {
+				continue
 			}
 
 			// increment counts
@@ -121,6 +132,12 @@ func (t *CountBallot) Execute() error {
 				}
 			} else {
 				result.Total = result.Total + 1
+			}
+
+			log.ProcessedAt = t.Payload.GetSubmittedAt()
+			err = model.SaveBallotLog(log, t.Context, t.Namespace)
+			if err != nil {
+				return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Failed to save ballot log: %v", err)}
 			}
 		}
 	}
