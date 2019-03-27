@@ -57,7 +57,7 @@ func (t *Handler) CountBallot(context *gin.Context) {
 	}
 
 	// submit transaction
-	transaction, err := connector.NewTransaction("voting-organizer", payloadBytes, []string{voteAddress, resultAddress, ballotAddress}, []string{resultAddress}, signer)
+	transaction, err := connector.NewTransaction("voting-organizer", payloadBytes, []string{voteAddress, resultAddress, ballotAddress}, []string{resultAddress, ballotAddress}, signer)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Failed to create transaction: " + err.Error()})
 		return
