@@ -75,11 +75,12 @@ func (t *CountBallot) Execute() error {
 			if count.GetCandidate() == candidate.GetCode() {
 				continue
 			}
+
+			result.Counts = append(result.Counts, &voting.Result_Count{
+				Candidate: candidate.GetCode(),
+				Count:     0,
+			})
 		}
-		result.Counts = append(result.Counts, &voting.Result_Count{
-			Candidate: candidate.GetCode(),
-			Count:     0,
-		})
 	}
 
 	// count ballot
