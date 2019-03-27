@@ -27,8 +27,7 @@ func (t *Handler) GetBallot(context *gin.Context) {
 	}
 
 	addresses := []string{
-		connector.GetBallotAddress(lib.Hexdigest256(request.Code), request.VoteID, false),
-		connector.GetBallotAddress(lib.Hexdigest256(request.Code), request.VoteID, true),
+		connector.GetBallotAddress(lib.Hexdigest256(request.Code), request.VoteID),
 	}
 
 	for _, address := range addresses {

@@ -1,22 +1,26 @@
 package connector
 
 import (
+	"fmt"
+	"strconv"
 	"voting/lib"
 )
 
-// GetBallotAddressPrefix returns prefix of ballot address
-func GetBallotAddressPrefix(voteID string) string {
-	return GetNamespace() + "01" + lib.Hexdigest256(voteID)[:20]
+// GetBallotAddress returns full ballot address
+func GetBallotAddress(hashedCode string, voteID string) string {
+	// format: namespace(6) + ballot(2) + voteID(16) + hashedCode(44)
+	return GetNamespace() + "01" + lib.Hexdigest256(voteID)[:16] + hashedCode[:44]
 }
 
-// GetBallotAddress returns full ballot address
-func GetBallotAddress(hashedCode string, voteID string, counted bool) string {
-	// format: namespace(6) + ballot(2) + voteID(20) + counted(2) + hashedCode(40)
-	countFlag := "00"
-	if counted {
-		countFlag = "01"
-	}
-	return GetBallotAddressPrefix(voteID) + countFlag + hashedCode[:40]
+// GetBallotLogAddressPrefix returns prefix of ballot log address
+func GetBallotLogAddressPrefix(voteID string) string {
+	return GetNamespace() + "11" + lib.Hexdigest256(voteID)[:16]
+}
+
+// GetBallotLogAddress returns full ballot log address
+func GetBallotLogAddress(hashedCode string, voteID string, timestamp int64) string {
+	// format: namespace(6) + ballotLog(2) + voteID(16) + timestamp(16) + hashedCode(30)
+	return GetBallotLogAddressPrefix(voteID) + fmt.Sprintf("%016s", strconv.FormatInt(timestamp, 16)) + hashedCode[:30]
 }
 
 // GetVoteAddress returns address of vote

@@ -51,8 +51,8 @@ func (t *Handler) CastBallot(context *gin.Context) {
 
 	// get related address
 	ballotAddresses := []string{
-		connector.GetBallotAddress(lib.Hexdigest256(request.Code), request.VoteID, false),
-		connector.GetBallotAddress(lib.Hexdigest256(request.Code), request.VoteID, true),
+		connector.GetBallotAddress(lib.Hexdigest256(request.Code), request.VoteID),
+		connector.GetBallotLogAddress(lib.Hexdigest256(request.Code), request.VoteID, payload.GetSubmittedAt()),
 	}
 	voteAddress := connector.GetVoteAddress(request.VoteID)
 

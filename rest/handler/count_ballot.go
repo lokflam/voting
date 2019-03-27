@@ -47,7 +47,7 @@ func (t *Handler) CountBallot(context *gin.Context) {
 	// get related address
 	voteAddress := connector.GetVoteAddress(request.VoteID)
 	resultAddress := connector.GetResultAddressPrefix(request.VoteID)
-	ballotAddress := connector.GetBallotAddressPrefix(request.VoteID)
+	ballotAddress := connector.GetBallotLogAddressPrefix(request.VoteID)
 
 	// use a new random requester
 	signer, err := connector.NewSigner(request.PrivateKey)
@@ -57,7 +57,7 @@ func (t *Handler) CountBallot(context *gin.Context) {
 	}
 
 	// submit transaction
-	transaction, err := connector.NewTransaction("voting-organizer", payloadBytes, []string{voteAddress, resultAddress, ballotAddress}, []string{resultAddress, ballotAddress}, signer)
+	transaction, err := connector.NewTransaction("voting-organizer", payloadBytes, []string{voteAddress, resultAddress, ballotAddress}, []string{resultAddress}, signer)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Failed to create transaction: " + err.Error()})
 		return

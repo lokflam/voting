@@ -85,8 +85,8 @@ func (t *Handler) AddBallot(context *gin.Context) {
 
 		// get related address
 		ballotAddresses := []string{
-			connector.GetBallotAddress(hashedCode, request.VoteID, false),
-			connector.GetBallotAddress(hashedCode, request.VoteID, true),
+			connector.GetBallotAddress(hashedCode, request.VoteID),
+			connector.GetBallotLogAddress(hashedCode, request.VoteID, submittedAt),
 		}
 
 		// create transaction

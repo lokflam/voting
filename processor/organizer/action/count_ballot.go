@@ -77,17 +77,17 @@ func (t *CountBallot) Execute() error {
 
 	// count ballot
 	options := &lib.StateOptions{
-		Address: model.GetBallotAddressPrefix(voteID, false, t.Namespace), // only get ballots that are not counted
+		Address: model.GetBallotLogAddressPrefix(voteID, prevResult.GetCreatedAt(), t.Namespace), // only get ballots that are not counted
 		Limit:   100,
 		Start:   "",
 		Head:    "",
 		Reverse: false,
 	}
 	for countedAll := false; !countedAll; {
-		// get ballot states
+		// get ballot log states
 		stateResponse, err = lib.GetStatesFromRest(options, t.Rest)
 		if err != nil {
-			return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Failed to get ballot states: %v", err)}
+			return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Failed to get ballot log states: %v", err)}
 		}
 
 		// check progress
@@ -98,40 +98,29 @@ func (t *CountBallot) Execute() error {
 			countedAll = true
 		}
 
-		// add ballot to count
+		// add ballot log to count
 		for _, data := range stateResponse.Data {
-			// decode ballot
-			ballot := &voting.Ballot{}
-			err = proto.Unmarshal(data, ballot)
+			// decode ballot log
+			log := &voting.BallotLog{}
+			err = proto.Unmarshal(data, log)
 			if err != nil {
-				return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Failed to unmarshal ballot: %v", err)}
+				return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Failed to unmarshal ballot log: %v", err)}
 			}
 
-			modified := false
-
-			// increment total ballot, ignore ballots that are created after this transaction is submitted
-			if ballot.State == voting.Ballot_NOT_IN_RESULT && ballot.GetCreatedAt() < t.Payload.GetSubmittedAt() {
-				result.Total = result.Total + 1
-				ballot.State = voting.Ballot_IN_RESULT_TOTAL
-				modified = true
+			// ignore ballots that are casted after this transaction is submitted
+			if log.GetLoggedAt() > t.Payload.GetSubmittedAt() {
+				countedAll = true
+				break
 			}
 
-			// increment casted and counts, ignore ballots that are casted after this transaction is submitted
-			if ballot.GetChoice() != "" && ballot.GetCastedAt() < t.Payload.GetSubmittedAt() {
+			// increment counts
+			if log.GetChoice() != "" {
 				result.Casted = result.Casted + 1
-				ballot.State = voting.Ballot_IN_RESULT_CASTED
-				if _, ok := result.Counts[ballot.GetChoice()]; ok {
-					result.Counts[ballot.GetChoice()] = result.Counts[ballot.GetChoice()] + 1
+				if _, ok := result.Counts[log.GetChoice()]; ok {
+					result.Counts[log.GetChoice()] = result.Counts[log.GetChoice()] + 1
 				}
-				modified = true
-			}
-
-			// save ballot
-			if modified {
-				err = model.SaveBallot(ballot, t.Context, t.Namespace)
-				if err != nil {
-					return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Failed to save ballot: %v", err)}
-				}
+			} else {
+				result.Total = result.Total + 1
 			}
 		}
 	}

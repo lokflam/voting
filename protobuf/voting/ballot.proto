@@ -4,16 +4,9 @@ package voting;
 
 // Ballot represents a ballot casted by an user
 message Ballot {
-    enum State {
-        NOT_IN_RESULT = 0;
-        IN_RESULT_TOTAL = 1;
-        IN_RESULT_CASTED = 2;
-    }
-
     string vote_id = 1;  // ID of a vote
     string hashed_code = 2; // the code hased with sha256
     string choice = 3;  // code of a candidate in the vote
-    State state = 4;  // indicate ballot counted
-    int64 casted_at = 5; // casted time
+    int64 casted_at = 14; // casted time
     int64 created_at = 15; // created time
 }

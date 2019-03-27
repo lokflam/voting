@@ -62,7 +62,6 @@ func (t *AddBallot) Execute() error {
 		VoteId:     voteID,
 		HashedCode: hashedCode,
 		Choice:     "",
-		State:      voting.Ballot_NOT_IN_RESULT,
 		CastedAt:   0,
 		CreatedAt:  t.Payload.GetSubmittedAt(),
 	}
@@ -71,6 +70,20 @@ func (t *AddBallot) Execute() error {
 	err = model.SaveBallot(ballot, t.Context, t.Namespace)
 	if err != nil {
 		return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Error saving ballot: %v", err)}
+	}
+
+	// create log
+	log := &voting.BallotLog{
+		VoteId:     ballot.GetVoteId(),
+		HashedCode: ballot.GetHashedCode(),
+		Choice:     ballot.GetChoice(),
+		LoggedAt:   t.Payload.GetSubmittedAt(),
+	}
+
+	// save log
+	err = model.SaveBallotLog(log, t.Context, t.Namespace)
+	if err != nil {
+		return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Error saving ballot log: %v", err)}
 	}
 
 	return nil
