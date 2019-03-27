@@ -8,8 +8,8 @@ import (
 
 // GetBallotAddress returns full ballot address
 func GetBallotAddress(hashedCode string, voteID string) string {
-	// format: namespace(6) + ballot(2) + voteID(16) + hashedCode(44)
-	return GetNamespace() + "01" + lib.Hexdigest256(voteID)[:16] + hashedCode[:44]
+	// format: namespace(6) + ballot(2) + voteID(16) + hashedCode(46)
+	return GetNamespace() + "01" + lib.Hexdigest256(voteID)[:16] + hashedCode[:46]
 }
 
 // GetBallotLogAddressPrefix returns prefix of ballot log address
