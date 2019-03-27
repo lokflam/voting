@@ -47,7 +47,47 @@ func (t *Handler) GetBallot(context *gin.Context) {
 		return
 	}
 
+	// get ballot create log
+	address = connector.GetBallotLogAddress(lib.Hexdigest256(request.Code), request.VoteID, ballot.GetCreatedAt())
+	stateResponse, err = lib.GetStatesFromRest(&lib.StateOptions{Address: address}, t.RestURL)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Failed to get ballot log state: " + err.Error()})
+		return
+	}
+
+	createdLog := &voting.BallotLog{}
+	if len(stateResponse.Data) > 0 {
+		err = proto.Unmarshal(stateResponse.Data[0], createdLog)
+		if err != nil {
+			context.JSON(http.StatusBadRequest, gin.H{"error": "Failed to decode state: " + err.Error()})
+			return
+		}
+	}
+
+	// get ballot casted log
+	address = connector.GetBallotLogAddress(lib.Hexdigest256(request.Code), request.VoteID, ballot.GetCastedAt())
+	stateResponse, err = lib.GetStatesFromRest(&lib.StateOptions{Address: address}, t.RestURL)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Failed to get ballot log state: " + err.Error()})
+		return
+	}
+
+	castedLog := &voting.BallotLog{}
+	if len(stateResponse.Data) > 0 {
+		err = proto.Unmarshal(stateResponse.Data[0], castedLog)
+		if err != nil {
+			context.JSON(http.StatusBadRequest, gin.H{"error": "Failed to decode state: " + err.Error()})
+			return
+		}
+	}
+
 	// success
-	context.JSON(http.StatusOK, gin.H{"data": ballot})
+	context.JSON(http.StatusOK, gin.H{
+		"data": gin.H{
+			"ballot":      ballot,
+			"created_log": createdLog,
+			"casted_log":  castedLog,
+		},
+	})
 	return
 }
