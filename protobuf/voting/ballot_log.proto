@@ -7,5 +7,6 @@ message BallotLog {
     string vote_id = 1;  // ID of a vote
     string hashed_code = 2; // the code hased with sha256
     string choice = 3;  // code of a candidate
+    int64 processed_at = 14; // counted time
     int64 logged_at = 15; // time of log
 }

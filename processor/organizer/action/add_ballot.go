@@ -74,10 +74,11 @@ func (t *AddBallot) Execute() error {
 
 	// create log
 	log := &voting.BallotLog{
-		VoteId:     ballot.GetVoteId(),
-		HashedCode: ballot.GetHashedCode(),
-		Choice:     ballot.GetChoice(),
-		LoggedAt:   t.Payload.GetSubmittedAt(),
+		VoteId:      ballot.GetVoteId(),
+		HashedCode:  ballot.GetHashedCode(),
+		Choice:      ballot.GetChoice(),
+		ProcessedAt: 0,
+		LoggedAt:    t.Payload.GetSubmittedAt(),
 	}
 
 	// save log
