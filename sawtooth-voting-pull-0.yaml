@@ -69,20 +69,20 @@ services:
           -o config.batch && \
         sawset proposal create \
           -k /etc/sawtooth/keys/validator.priv \
-             sawtooth.poet.target_wait_time=5 \
-             sawtooth.poet.initial_wait_time=25 \
+             sawtooth.poet.target_wait_time=2 \
+             sawtooth.poet.initial_wait_time=2 \
              sawtooth.publisher.max_batches_per_block=1000 \
           -o poet-settings.batch && \
         sawadm genesis \
           config-genesis.batch config.batch poet.batch poet-settings.batch && \
         sawtooth-validator -vvv \
-          --bind network:tcp://eth0:8800 \
-          --bind component:tcp://eth0:4004 \
-          --bind consensus:tcp://eth0:5050 \
+          --bind network:tcp://0.0.0.0:8800 \
+          --bind component:tcp://0.0.0.0:4004 \
+          --bind consensus:tcp://0.0.0.0:5050 \
           --peering dynamic \
           --peers ${PEERS} \
           --seeds ${PEERS} \
-          --endpoint tcp://${HOST}:8800 \
+          --endpoint tcp://0.0.0.0:8800 \
           --scheduler parallel \
           --network-auth trust
     \""
