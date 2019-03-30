@@ -60,9 +60,7 @@ services:
           --peers ${PEERS} \
           --seeds ${PEERS} \
           --scheduler parallel \
-          --network-auth trust \
-          --opentsdb-url http://${HOST}:8086 \
-          --opentsdb-db metrics
+          --network-auth trust
 
     \""
     environment:
@@ -105,9 +103,7 @@ services:
         sawtooth-rest-api \
         -vvv \
         -C tcp://validator:4004 \
-        --bind rest-api:8008 \
-        --opentsdb-url http://${HOST}:8086 \
-        --opentsdb-db metrics
+        --bind rest-api:8008
     \""
     stop_signal: SIGKILL
 
