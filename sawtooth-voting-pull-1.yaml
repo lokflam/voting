@@ -55,7 +55,7 @@ services:
           --bind network:tcp://0.0.0.0:8800 \
           --bind component:tcp://0.0.0.0:4004 \
           --bind consensus:tcp://0.0.0.0:5050 \
-          --endpoint tcp://0.0.0.0:8800 \
+          --endpoint tcp://${HOST}:8800 \
           --peering dynamic \
           --peers ${PEERS} \
           --seeds ${PEERS} \
