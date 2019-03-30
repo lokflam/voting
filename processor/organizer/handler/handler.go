@@ -50,7 +50,7 @@ func (t *Handler) Apply(request *processor_pb2.TpProcessRequest, context *proces
 
 	// check submitted time
 	if payload.GetSubmittedAt() > time.Now().Unix() || payload.GetSubmittedAt()+acceptedDelay < time.Now().Unix() {
-		return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Accepted session ended: %v", err)}
+		return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Accepted session ended")}
 	}
 
 	// list of valid actions

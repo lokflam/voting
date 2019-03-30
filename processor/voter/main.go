@@ -48,10 +48,10 @@ func main() {
 
 	handler := &handler.Handler{}
 	processor := processor.NewTransactionProcessor(opts.Connect)
-	processor.SetMaxQueueSize(opts.Queue)
-	if opts.Threads > 0 {
-		processor.SetThreadCount(opts.Threads)
-	}
+	// processor.SetMaxQueueSize(opts.Queue)
+	// if opts.Threads > 0 {
+	// 	processor.SetThreadCount(opts.Threads)
+	// }
 	processor.AddHandler(handler)
 	processor.ShutdownOnSignal(syscall.SIGINT, syscall.SIGTERM)
 	err = processor.Start()
