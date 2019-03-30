@@ -82,7 +82,7 @@ services:
           --peering static \
           --peers ${PEERS} \
           --endpoint tcp://${HOST}:8800 \
-          --scheduler parallel \
+          --scheduler serial \
           --network-auth trust
     \""
     environment:

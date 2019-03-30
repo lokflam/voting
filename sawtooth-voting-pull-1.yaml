@@ -56,10 +56,9 @@ services:
           --bind component:tcp://0.0.0.0:4004 \
           --bind consensus:tcp://0.0.0.0:5050 \
           --endpoint tcp://${HOST}:8800 \
-          --peering dynamic \
+          --peering static \
           --peers ${PEERS} \
-          --seeds ${PEERS} \
-          --scheduler parallel \
+          --scheduler serial \
           --network-auth trust
 
     \""
