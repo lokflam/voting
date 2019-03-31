@@ -81,7 +81,21 @@ services:
           --peers ${PEERS} \
           --endpoint tcp://${HOST}:8800 \
           --scheduler parallel \
-          --network-auth trust
+          --network-auth trust && \
+        sawset proposal create \
+          --key /etc/sawtooth/keys/validator.priv \
+          --url http://rest-api:8008 \
+          sawtooth.identity.allowed_keys=$(cat /etc/sawtooth/keys/validator.pub) && \
+        sawtooth identity policy create vo_policy \
+          -k /etc/sawtooth/keys/validator.priv \
+          --url http://rest-api:8008 \
+          \"PERMIT_KEY 02caf7596b9b8d9c27da437df19f6de57e94a5dad903ec0cd15549179377164379\" \
+          \"DENY_KEY *\" && \
+        sawtooth identity role create \
+          -k /etc/sawtooth/keys/validator.priv \
+          --url http://rest-api:8008 \
+          transactor.transaction_signer.voting-organizer \
+          vo_policy \
     \""
     environment:
       PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
