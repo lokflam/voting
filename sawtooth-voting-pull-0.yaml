@@ -71,10 +71,6 @@ services:
           -k /etc/sawtooth/keys/validator.priv \
              sawtooth.publisher.max_batches_per_block=1000 \
           -o poet-settings.batch && \
-        sawset proposal create \
-          --key /etc/sawtooth/keys/validator.priv \
-          --url http://rest-api:8008 \
-          sawtooth.identity.allowed_keys=$$(cat /etc/sawtooth/keys/validator.pub) && \
         sawadm genesis \
           config-genesis.batch config.batch poet.batch poet-settings.batch && \
         sawtooth-validator -vvv \
