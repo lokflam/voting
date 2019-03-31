@@ -85,7 +85,7 @@ services:
         sawset proposal create \
           --key /etc/sawtooth/keys/validator.priv \
           --url http://rest-api:8008 \
-          sawtooth.identity.allowed_keys=$(cat /etc/sawtooth/keys/validator.pub) && \
+          sawtooth.identity.allowed_keys=$$(cat /etc/sawtooth/keys/validator.pub) && \
         sawtooth identity policy create vo_policy \
           -k /etc/sawtooth/keys/validator.priv \
           --url http://rest-api:8008 \
