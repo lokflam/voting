@@ -3,7 +3,7 @@ Blockchain voting system prototype
 
 ## Development environment (optional)
 Docker & Docker Compose
-```
+```bash
 # docker
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
@@ -59,18 +59,22 @@ Set permission for transaction processor
 1. `docker cp validator.priv sawtooth-shell-default:.`
 1. `docker exec -it sawtooth-shell-default bash`
 1. `sawset proposal create --key validator.priv sawtooth.identity.allowed_keys=$(cat ~/.sawtooth/keys/root.pub) --url http://rest-api:8008`
-1. `sawtooth identity policy create vo_policy \
-    --url http://rest-api:8008 \
-    "PERMIT_KEY 02caf7596b9b8d9c27da437df19f6de57e94a5dad903ec0cd15549179377164379" \
-    "DENY_KEY *"`
-1. `sawtooth identity role create \
-    --url http://rest-api:8008 \
-    transactor.transaction_signer.voting-organizer vo_policy`
+1. ```bash
+   sawtooth identity policy create vo_policy \
+     --url http://rest-api:8008 \
+     "PERMIT_KEY 02caf7596b9b8d9c27da437df19f6de57e94a5dad903ec0cd15549179377164379" \
+     "DENY_KEY *"
+   ```
+1. ```bash
+   sawtooth identity role create \
+     --url http://rest-api:8008 \
+     transactor.transaction_signer.voting-organizer vo_policy
+   ```
 
 ## Setup load balancer
 Only need to setup on one host
 1. Install nginx
-    ```
+    ```bash
     sudo apt-get update
     sudo apt-get install nginx
     ```
@@ -79,7 +83,7 @@ Only need to setup on one host
 
 ## Load test with wrk
 1. Install wrk (referencing from https://github.com/wg/wrk/wiki/Installing-wrk-on-Linux)
-    ```
+    ```bash
     sudo apt-get install build-essential libssl-dev git -y
     git clone https://github.com/wg/wrk.git wrk
     cd wrk
@@ -89,7 +93,7 @@ Only need to setup on one host
     ```
 1. Create a new vote
 1. Add ballot to vote using script
-    ```
+    ```bash
     # host = 1.1.1.1:9009
     # private key = 793b849da13c4829693fa555c54686e44951f227637929e0997bd1b67705ecec
     # vote id = 1
@@ -98,7 +102,7 @@ Only need to setup on one host
     . addballot.sh 1.1.1.1:9009 793b849da13c4829693fa555c54686e44951f227637929e0997bd1b67705ecec 1 100
     ```
 1. Run load test
-    ```
+    ```bash
     # run load test on vote id = 1 & number of ballots = 100
     env vote_id=1 num=100 wrk -t1 -c10 -s wrk.lua http://1.1.1.1:9009/ballot/cast
     ```
