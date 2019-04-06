@@ -54,7 +54,7 @@ For every host running as a node in blockchain network
         1. `docker-compose -f sawtooth-voting-1.yaml down -v`
     
 ## Set permission
-Set permission for transaction processor
+Set permission for transaction processor (set using the first node)
 1. `docker cp sawtooth-validator-default:/etc/sawtooth/keys/validator.priv .`
 1. `docker cp validator.priv sawtooth-shell-default:.`
 1. `docker exec -it sawtooth-shell-default bash`
