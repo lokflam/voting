@@ -58,7 +58,7 @@ services:
           --endpoint tcp://${HOST}:8800 \
           --peering static \
           --peers ${PEERS} \
-          --scheduler serial \
+          --scheduler parallel \
           --network-auth trust
 
     \""
