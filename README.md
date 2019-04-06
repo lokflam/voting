@@ -80,6 +80,7 @@ Only need to setup on one host
     ```
 1. Add config for load balancing to `/etc/nginx/conf.d/`
     1. Can use `/nginx.conf` in this project as example
+1. Restart service `sudo service nginx restart`
 
 ## Load test with wrk
 1. Install wrk (referencing from https://github.com/wg/wrk/wiki/Installing-wrk-on-Linux)
