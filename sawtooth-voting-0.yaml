@@ -69,9 +69,7 @@ services:
           -o config.batch && \
         sawset proposal create \
           -k /etc/sawtooth/keys/validator.priv \
-             sawtooth.poet.target_wait_time=5 \
-             sawtooth.poet.initial_wait_time=25 \
-             sawtooth.publisher.max_batches_per_block=100 \
+             sawtooth.publisher.max_batches_per_block=1000 \
           -o poet-settings.batch && \
         sawadm genesis \
           config-genesis.batch config.batch poet.batch poet-settings.batch && \
@@ -82,10 +80,8 @@ services:
           --peering static \
           --peers ${PEERS} \
           --endpoint tcp://${HOST}:8800 \
-          --scheduler parallel \
-          --network-auth challenge \
-          --opentsdb-url http://${HOST}:8086 \
-          --opentsdb-db metrics
+          --scheduler serial \
+          --network-auth trust
     \""
     environment:
       PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
@@ -137,9 +133,7 @@ services:
         sawtooth-rest-api \
         -vvv \
         -C tcp://validator:4004 \
-        --bind rest-api:8008 \
-        --opentsdb-url http://${HOST}:8086 \
-        --opentsdb-db metrics
+        --bind rest-api:8008
     \""
     stop_signal: SIGKILL
 

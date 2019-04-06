@@ -55,13 +55,12 @@ services:
           --bind network:tcp://eth0:8800 \
           --bind component:tcp://eth0:4004 \
           --bind consensus:tcp://eth0:5050 \
-          --peering static \
           --endpoint tcp://${HOST}:8800 \
+          --peering static \
           --peers ${PEERS} \
-          --scheduler parallel \
-          --network-auth challenge \
-          --opentsdb-url http://${HOST}:8086 \
-          --opentsdb-db metrics
+          --scheduler serial \
+          --network-auth trust
+
     \""
     environment:
       PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
@@ -103,9 +102,7 @@ services:
         sawtooth-rest-api \
         -vvv \
         -C tcp://validator:4004 \
-        --bind rest-api:8008 \
-        --opentsdb-url http://${HOST}:8086 \
-        --opentsdb-db metrics
+        --bind rest-api:8008
     \""
     stop_signal: SIGKILL
 
