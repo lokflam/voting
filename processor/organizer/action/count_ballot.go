@@ -89,68 +89,70 @@ func (t *CountBallot) Execute() error {
 
 	// count ballot
 	// get recent ballots
-	options := &lib.StateOptions{
-		Address: model.GetBallotLogAddressPrefix(voteID, t.Namespace),
-		Limit:   100,
-		Start:   "",
-		Head:    "",
-		Reverse: true,
-	}
-	for countedAll := false; !countedAll; {
-		// get ballot log states
-		stateResponse, err = lib.GetStatesFromRest(options, t.Rest)
-		if err != nil {
-			return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Failed to get ballot log states: %v", err)}
+	if prevResult.GetCreatedAt() < result.GetCreatedAt() {
+		options := &lib.StateOptions{
+			Address: model.GetBallotLogAddressPrefix(voteID, t.Namespace),
+			Limit:   100,
+			Start:   "",
+			Head:    "",
+			Reverse: true,
 		}
-
-		// check progress
-		if stateResponse.NextPosition != "" {
-			options.Start = stateResponse.NextPosition
-			options.Head = stateResponse.Head
-		} else {
-			countedAll = true
-		}
-
-		// add ballot log to count
-		for _, data := range stateResponse.Data {
-			// decode ballot log
-			log := &voting.BallotLog{}
-			err = proto.Unmarshal(data, log)
+		for countedAll := false; !countedAll; {
+			// get ballot log states
+			stateResponse, err = lib.GetStatesFromRest(options, t.Rest)
 			if err != nil {
-				return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Failed to unmarshal ballot log: %v", err)}
+				return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Failed to get ballot log states: %v", err)}
 			}
-
-			// ignore ballots that are casted after this transaction is submitted
-			if log.GetLoggedAt() > t.Payload.GetSubmittedAt() {
-				continue
-			}
-
-			// only process ballots that are not processed in last count
-			if log.GetLoggedAt() < prevResult.GetCreatedAt()-t.AcceptedDelay {
-				break
-			}
-
-			// skip counted ballot
-			if log.GetProcessedAt() > 0 {
-				continue
-			}
-
-			// increment counts
-			if log.GetChoice() != "" {
-				result.Casted = result.Casted + 1
-				for _, count := range result.GetCounts() {
-					if count.GetCandidate() == log.GetChoice() {
-						count.Count = count.GetCount() + 1
-					}
-				}
+	
+			// check progress
+			if stateResponse.NextPosition != "" {
+				options.Start = stateResponse.NextPosition
+				options.Head = stateResponse.Head
 			} else {
-				result.Total = result.Total + 1
+				countedAll = true
 			}
-
-			log.ProcessedAt = t.Payload.GetSubmittedAt()
-			err = model.SaveBallotLog(log, t.Context, t.Namespace)
-			if err != nil {
-				return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Failed to save ballot log: %v", err)}
+	
+			// add ballot log to count
+			for _, data := range stateResponse.Data {
+				// decode ballot log
+				log := &voting.BallotLog{}
+				err = proto.Unmarshal(data, log)
+				if err != nil {
+					return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Failed to unmarshal ballot log: %v", err)}
+				}
+	
+				// ignore ballots that are casted after this transaction is submitted
+				if log.GetLoggedAt() > t.Payload.GetSubmittedAt() {
+					continue
+				}
+	
+				// only process ballots that are not processed in last count
+				if log.GetLoggedAt() < prevResult.GetCreatedAt()-t.AcceptedDelay {
+					break
+				}
+	
+				// skip counted ballot
+				if log.GetProcessedAt() > 0 {
+					continue
+				}
+	
+				// increment counts
+				if log.GetChoice() != "" {
+					result.Casted = result.Casted + 1
+					for _, count := range result.GetCounts() {
+						if count.GetCandidate() == log.GetChoice() {
+							count.Count = count.GetCount() + 1
+						}
+					}
+				} else {
+					result.Total = result.Total + 1
+				}
+	
+				log.ProcessedAt = t.Payload.GetSubmittedAt()
+				err = model.SaveBallotLog(log, t.Context, t.Namespace)
+				if err != nil {
+					return &processor.InvalidTransactionError{Msg: fmt.Sprintf("Failed to save ballot log: %v", err)}
+				}
 			}
 		}
 	}
