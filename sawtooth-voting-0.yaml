@@ -69,6 +69,8 @@ services:
           -o config.batch && \
         sawset proposal create \
           -k /etc/sawtooth/keys/validator.priv \
+             sawtooth.poet.target_wait_time=10 \
+             sawtooth.poet.initial_wait_time=25 \
              sawtooth.publisher.max_batches_per_block=1000 \
           -o poet-settings.batch && \
         sawadm genesis \
